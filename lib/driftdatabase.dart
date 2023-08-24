@@ -22,22 +22,33 @@ class _DriftDatabaseDemoState extends State<DriftDatabaseDemo> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(),
-      body: Container(),
-    );
+        appBar: AppBar(),
+        body: FutureBuilder<List<Todo>>(
+            future: getDatabaseData(),
+            builder: (context, snapshot) {
+              if (snapshot.hasData) {
+                final todos = snapshot.data;
+                return ListView.builder(
+                  itemCount: todos?.length,
+                  itemBuilder: (context, index) {
+                    return ListTile(
+                      title: Text(todos![index].title),
+                      subtitle: Text(todos[index].description),
+                    );
+                  },
+                );
+              } else {
+                return const CircularProgressIndicator();
+              }
+            }));
   }
 
-  void getDatabaseData() async {
+  Future<List<Todo>> getDatabaseData() async {
     var db = widget.databaseProvider.database;
 
-    (await db.into(db.todos).insert(
-        TodosCompanion.insert(title: 'oyeah', description: "descript")));
+    // (await db.into(db.todos).insert(
+    //     TodosCompanion.insert(title: 'oyeah', description: "descript")));
 
-    (await db.into(db.todos).insert(TodosCompanion.insert(
-        title: 'seoncd Title', description: "this is second descriptions")));
-
-    (await db.select(db.todos).get()).forEach((element) {
-      debugPrint('data base data is - $element');
-    });
+    return await db.select(db.todos).get();
   }
 }
