@@ -20,7 +20,7 @@ abstract class TodosView extends View {
 
   //when using join adding this is important expression here for getting common data
   //from productid from both table
-  Expression<String> get data =>
+  Expression<String> get dataTodoView =>
       todo.title + const Constant('(') + details.name + const Constant(')');
 
   @override

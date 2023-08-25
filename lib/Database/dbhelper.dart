@@ -6,23 +6,20 @@ class DatabaseHelper {
   AppDatabase _db;
   DatabaseHelper(this._db);
 
-  Future<List<Todo>> getDatabaseData() async {
-    final id = await _db.into(_db.todos).insert(TodosCompanion.insert(
-          title: ' TODO TABLE',
-          description: "First desc ",
-        ));
+  Future<List<Todo>> insertIntoDatabaseData(TodosCompanion entity) async {
+    final id = await _db.into(_db.todos).insert(entity);
+    debugPrint('join id - $id');
 
     await _db.into(_db.detail).insert(DetailCompanion.insert(
           name: ' DETAIL TABLE',
           productID: id,
         ));
 
-    return await _db.select(_db.todos).get();
+    return getAllTodos();
   }
 
   Future<List<Details>> getDetailsData() async {
-    var da = await _db.select(_db.todosView).get();
-    debugPrint('join data - $da');
+    await _db.select(_db.todosView).get();
 
     return await _db.select(_db.detail).get();
   }
@@ -38,10 +35,6 @@ class DatabaseHelper {
 
   Future<bool> updateTodoTable(TodosCompanion entity) async {
     return await _db.update(_db.todos).replace(entity);
-  }
-
-  Future<int> insertIntoTodo(TodosCompanion entity) async {
-    return await _db.into(_db.todos).insert(entity);
   }
 
   Future<int> deleteTodo(int id) async {
