@@ -1,19 +1,13 @@
-import 'dart:io';
-
-import 'package:drift_second_demo/databaseprovider.dart';
+import 'package:drift_second_demo/Database/databaseprovider.dart';
 import 'package:flutter/material.dart';
-import 'package:drift/native.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:provider/provider.dart';
+import 'Database/app_db.dart';
 import 'driftdatabase.dart';
-import 'database.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  final directory = await getApplicationDocumentsDirectory();
-  final dbFile = File('${directory.path}/my_database.db');
 
-  AppDatabase db = AppDatabase(NativeDatabase.createInBackground(dbFile));
+  AppDatabase db = AppDatabase();
 
   runApp(ChangeNotifierProvider(
     create: (context) => DatabaseProvider(db),

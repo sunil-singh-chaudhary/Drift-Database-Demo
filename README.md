@@ -1,8 +1,6 @@
-# drift_second_demo
+## Drift Example Flutter
 
-A new Flutter project.
-
-## Getting Started
+# Getting Started
 
 # Add these Dependecies First
 1. dependencies:
@@ -15,8 +13,6 @@ A new Flutter project.
 2. dev_dependencies:
    build_runner: ^2.4.6
    drift_dev:
-
-## RUN BELOW COMMAND ON TERMINAL AT LAST
 
 
 #  CODE FOR DATABASE TABLE 
@@ -32,6 +28,8 @@ class Todos extends Table {
   TextColumn get description => text()();
   
 }
+
+
 
 abstract class TodosView extends View {
 
@@ -51,9 +49,9 @@ class AppDatabase extends _$AppDatabase {
 }
 
 
-## before using command to generate data You need to add first import
-   1. part 'database.g.dart';
-and 
+## before using command to generate data You need to add first 
+   1. import part 'database.g.dart';
+    and 
    2. @DriftDatabase(tables: [Todos], views: [TodosView])
 class AppDatabase extends _$AppDatabase {
   AppDatabase(QueryExecutor e) : super(e);
@@ -61,8 +59,7 @@ class AppDatabase extends _$AppDatabase {
   @override
   int get schemaVersion => 1;
 }
-then run the command 
-
-##    dart pub run build_runner build
+## run the command 
+    dart pub run build_runner build
 
 
