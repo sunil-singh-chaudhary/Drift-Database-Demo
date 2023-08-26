@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'app_db.dart';
 
 class DatabaseHelper {
-  AppDatabase _db;
+  AppDatabase _db; //dont make it final else below could get error
   DatabaseHelper(this._db);
 
   Future<List<Todo>> insertIntoDatabaseData(TodosCompanion entity) async {

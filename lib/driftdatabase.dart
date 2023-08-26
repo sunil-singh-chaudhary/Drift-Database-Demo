@@ -6,7 +6,7 @@ import 'Database/dbhelper.dart';
 import 'Utils/db_utils.dart';
 
 class DriftDatabaseDemo extends StatefulWidget {
-  DriftDatabaseDemo({super.key});
+  const DriftDatabaseDemo({super.key});
 
   @override
   State<DriftDatabaseDemo> createState() => _DriftDatabaseDemoState();
@@ -24,7 +24,7 @@ class _DriftDatabaseDemoState extends State<DriftDatabaseDemo> {
     dbHelper = DatabaseHelper(database!);
 
     // widget.dbHelper?.drop(); //call detail table show all data
-    dbHelper?.getDetailsData(); //call detail table show all data
+    dbHelper?.getDetailsData();
 
     listenDatabaseChanges(); //listend todo table changes
   }
