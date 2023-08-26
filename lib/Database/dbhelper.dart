@@ -11,7 +11,7 @@ class DatabaseHelper {
     debugPrint('join id - $id');
 
     await _db.into(_db.detail).insert(DetailCompanion.insert(
-          name: ' DETAIL TABLE',
+          name: ' DETAIL TABLE INSErt data',
           productID: id,
         ));
 

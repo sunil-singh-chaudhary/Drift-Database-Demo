@@ -30,6 +30,12 @@ class _DriftDatabaseDemoState extends State<DriftDatabaseDemo> {
   }
 
   @override
+  void dispose() {
+    database?.close(); //remove resource or memory leaks
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(),
@@ -54,20 +60,8 @@ class _DriftDatabaseDemoState extends State<DriftDatabaseDemo> {
                             alignment: Alignment.centerRight,
                             onPressed: () async {
                               int id = snapshot.data![index].id;
-                              debugPrint('click edit $id');
 
-                              await dbHelper
-                                  ?.getTodoWithID(id)
-                                  .then((todoItem) {
-                                openDialog(
-                                    context: context,
-                                    isUpdate: true,
-                                    db: dbHelper,
-                                    callback: () {
-                                      setState(() {});
-                                    },
-                                    list: todoItem);
-                              });
+                              await editDatabaseItem(id, context);
                             },
                             icon: const Icon(Icons.edit),
                           ),
@@ -77,12 +71,7 @@ class _DriftDatabaseDemoState extends State<DriftDatabaseDemo> {
                           IconButton(
                             alignment: Alignment.centerRight,
                             onPressed: () {
-                              int id = snapshot.data![index].id;
-
-                              dbHelper?.deleteTodo(id);
-                              //add ? else error throws
-                              debugPrint('deleted successfully $id');
-                              setState(() {});
+                              deletedatabaseItem(snapshot, index);
                             },
                             icon: const Icon(Icons.delete),
                           ),
@@ -110,6 +99,28 @@ class _DriftDatabaseDemoState extends State<DriftDatabaseDemo> {
         },
       ),
     );
+  }
+
+  void deletedatabaseItem(AsyncSnapshot<List<Todo>> snapshot, int index) {
+    int id = snapshot.data![index].id;
+
+    dbHelper?.deleteTodo(id);
+    //add ? else error throws
+    debugPrint('deleted successfully $id');
+    setState(() {});
+  }
+
+  Future<void> editDatabaseItem(int id, BuildContext context) async {
+    await dbHelper?.getTodoWithID(id).then((todoItem) {
+      openDialog(
+          context: context,
+          isUpdate: true,
+          db: dbHelper,
+          callback: () {
+            setState(() {});
+          },
+          list: todoItem);
+    });
   }
 
   listenDatabaseChanges() async {
