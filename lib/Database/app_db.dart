@@ -38,5 +38,6 @@ class AppDatabase extends _$AppDatabase {
   int get schemaVersion => 1;
 
   //trying to watch data
-  Stream<List<Todo>> get allItems => select(todos).watch();
+  Stream<List<Todo>> get allTodoItemsWatch => select(todos).watch();
+  Stream<List<Details>> get alldetailsItemsWatch => select(detail).watch();
 }

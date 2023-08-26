@@ -7,25 +7,26 @@ import 'Utils/db_utils.dart';
 
 class DriftDatabaseDemo extends StatefulWidget {
   DriftDatabaseDemo({super.key});
-  DatabaseHelper? dbHelper;
 
   @override
   State<DriftDatabaseDemo> createState() => _DriftDatabaseDemoState();
 }
 
 class _DriftDatabaseDemoState extends State<DriftDatabaseDemo> {
+  DatabaseHelper? dbHelper;
+  AppDatabase? database;
   @override
   void initState() {
     super.initState();
-    final databaseProvider =
-        Provider.of<DatabaseProvider>(context, listen: false);
-    final database = databaseProvider.database;
+    database = Provider.of<DatabaseProvider>(context, listen: false).database;
 
     //init database only single instance
-    widget.dbHelper = DatabaseHelper(database);
+    dbHelper = DatabaseHelper(database!);
 
     // widget.dbHelper?.drop(); //call detail table show all data
-    widget.dbHelper?.getAllTodos(); //call detail table show all data
+    dbHelper?.getDetailsData(); //call detail table show all data
+
+    listenDatabaseChanges(); //listend todo table changes
   }
 
   @override
@@ -33,7 +34,7 @@ class _DriftDatabaseDemoState extends State<DriftDatabaseDemo> {
     return Scaffold(
       appBar: AppBar(),
       body: FutureBuilder<List<Todo>>(
-          future: widget.dbHelper?.getAllTodos(),
+          future: dbHelper?.getAllTodos(),
           builder: (context, snapshot) {
             if (snapshot.hasData) {
               final todos = snapshot.data;
@@ -55,18 +56,17 @@ class _DriftDatabaseDemoState extends State<DriftDatabaseDemo> {
                               int id = snapshot.data![index].id;
                               debugPrint('click edit $id');
 
-                              await widget.dbHelper
+                              await dbHelper
                                   ?.getTodoWithID(id)
                                   .then((todoItem) {
                                 openDialog(
-                                  context: context,
-                                  isUpdate: true,
-                                  db: widget.dbHelper,
-                                  callback: () {
-                                    setState(() {});
-                                  },
-                                  list: todoItem,
-                                );
+                                    context: context,
+                                    isUpdate: true,
+                                    db: dbHelper,
+                                    callback: () {
+                                      setState(() {});
+                                    },
+                                    list: todoItem);
                               });
                             },
                             icon: const Icon(Icons.edit),
@@ -78,10 +78,9 @@ class _DriftDatabaseDemoState extends State<DriftDatabaseDemo> {
                             alignment: Alignment.centerRight,
                             onPressed: () {
                               int id = snapshot.data![index].id;
-                              debugPrint('click delete $id');
 
-                              widget.dbHelper
-                                  ?.deleteTodo(id); //add ? else error throws
+                              dbHelper?.deleteTodo(id);
+                              //add ? else error throws
                               debugPrint('deleted successfully $id');
                               setState(() {});
                             },
@@ -103,7 +102,7 @@ class _DriftDatabaseDemoState extends State<DriftDatabaseDemo> {
           openDialog(
             context: context,
             isUpdate: false,
-            db: widget.dbHelper,
+            db: dbHelper,
             callback: () {
               setState(() {});
             },
@@ -113,10 +112,13 @@ class _DriftDatabaseDemoState extends State<DriftDatabaseDemo> {
     );
   }
 
-  // listenDatabaseChanges() async {
-  //   var db = widget.databaseProvider.database;
-  //   db.allItems.listen((event) {
-  //     debugPrint('Listne Todo-item in database: $event');
-  //   });
-  // }
+  listenDatabaseChanges() async {
+    var db = database!;
+    db.allTodoItemsWatch.listen((event) {
+      debugPrint('Listne Todo-item in database: $event');
+    });
+    db.alldetailsItemsWatch.listen((event) {
+      debugPrint('Listne Details-item in database: $event');
+    });
+  }
 }

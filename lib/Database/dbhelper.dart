@@ -45,4 +45,8 @@ class DatabaseHelper {
   Future<int> drop() async {
     return await (_db.delete(_db.todos)).go();
   }
+
+  Future<int> dropdetails() async {
+    return await (_db.delete(_db.detail)).go();
+  }
 }
